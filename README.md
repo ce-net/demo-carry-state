@@ -93,7 +93,10 @@ is time spent waiting for a CPU, because the tail was empty or a few ops. Correc
 every run, idle or loaded, ended with the three counts equal.
 
 CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the tests and then the 100-move run against a
-fresh local dev sim on every push. It fails on any lost or duplicated write.
+fresh local dev sim on every push. It fails on any lost or duplicated write. On a quiet GitHub runner
+([run 43746424912](https://github.com/ce-net/demo-demo-carry-state/actions/runs/43746424912)) the same 100 moves
+froze writes for a median of 0.65 ms and at most 0.89 ms. That run ended with 19121 writes sent, 19121
+acknowledged and 19121 present.
 
 ## How a move works
 
