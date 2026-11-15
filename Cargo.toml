@@ -1,0 +1,43 @@
+[workspace]
+resolver = "2"
+members = [".", "crates/notes-store", "crates/cell-migrate", "crates/name-resolve"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+authors = ["Leif Rydenfalk <59741378+Leif-Rydenfalk@users.noreply.github.com>"]
+repository = "https://github.com/ce-net/demo-demo-carry-state"
+
+[workspace.dependencies]
+# The open capability token and Ed25519 identity: https://github.com/ce-net/ce-net-proto
+ce-net-proto = { git = "https://github.com/ce-net/ce-net-proto", rev = "ff449250618cc70bde491055cb97e8ef42121390" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+hex = "0.4"
+notes-store = { path = "crates/notes-store" }
+cell-migrate = { path = "crates/cell-migrate" }
+name-resolve = { path = "crates/name-resolve" }
+
+[package]
+name = "carry-state"
+description = "A cell that takes its data with it: snapshot, tail and an epoch-fenced, signed handoff between processes."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+ce-net-proto.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+hex.workspace = true
+notes-store.workspace = true
+cell-migrate.workspace = true
+name-resolve.workspace = true
+
+[profile.release]
+debug = false

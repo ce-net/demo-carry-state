@@ -1,0 +1,37 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --release --workspace --locked
+  moves-100:
+    # 100 moves under continuous load (8 clients x 200 writes/s); fails on any lost or duplicated write.
+    # The clients find the name service through the public local-dev-sim, as they would on ce-net.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: git clone --depth 1 https://github.com/ce-net/ce-net-local-dev-sim /tmp/local-dev-sim
+      - run: |
+          python3 /tmp/local-dev-sim/cenet_mock.py 7878 &
+          sleep 1
+          cargo run --release --locked -- prove --moves 100 --clients 8 --rate 200 --settle-ms 100 \
+            --sim http://127.0.0.1:7878/mcp --out moves-100.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: moves-100
+          path: moves-100.json

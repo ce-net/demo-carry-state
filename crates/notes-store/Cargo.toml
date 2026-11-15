@@ -1,0 +1,12 @@
+[package]
+name = "notes-store"
+description = "The sample stateful cell: an append-only notes store with per-client write dedupe."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+serde.workspace = true
+cell-migrate.workspace = true

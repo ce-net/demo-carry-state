@@ -1,0 +1,15 @@
+[package]
+name = "name-resolve"
+description = "Name to current holder, with epoch. Moves only on a verified handoff to the next epoch."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+ce-net-proto.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+hex.workspace = true
+cell-migrate.workspace = true

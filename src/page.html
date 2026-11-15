@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carry state</title>
+<style>
+:root { --bg:#fbfaf7; --fg:#1d1c1a; --muted:#6b6862; --line:#e3e0d9; --card:#ffffff; --ok:#1f7a4d; --bad:#b3261e; --accent:#2f5bd3; }
+@media (prefers-color-scheme: dark) { :root { --bg:#151513; --fg:#ecebe6; --muted:#a19e96; --line:#33322e; --card:#1d1d1a; --ok:#5cc98f; --bad:#f2867d; --accent:#8fa9ff; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 880px; margin: 0 auto; padding: 28px 16px 48px; }
+h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+.sub { color: var(--muted); margin: 0 0 24px; }
+.procs { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.proc { background: var(--card); border:1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.proc.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.proc b { font-size: 18px; }
+.proc small { display:block; color: var(--muted); font-family: ui-monospace, monospace; font-size: 12px; }
+.tag { font-size: 12px; color: var(--accent); font-weight: 600; }
+.nums { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+.num { background: var(--card); border:1px solid var(--line); border-radius:10px; padding: 12px 16px; }
+.num span { display:block; color: var(--muted); font-size: 13px; }
+.num b { font-size: 28px; font-variant-numeric: tabular-nums; }
+button { font: inherit; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }
+.row { display:flex; gap:12px; align-items:center; flex-wrap: wrap; }
+#msg { color: var(--muted); }
+table { width:100%; border-collapse: collapse; margin-top: 20px; font-variant-numeric: tabular-nums; font-size: 14px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 500; }
+.ok { color: var(--ok); font-weight: 600; } .bad { color: var(--bad); font-weight: 600; }
+.wrap { overflow-x: auto; }
+@media (max-width: 560px) { .procs, .nums { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+<h1>A cell that takes its data with it</h1>
+<p class="sub">The client always calls the name <code>notes</code>. Move the cell and watch the three counts.</p>
+<div class="procs" id="procs"></div>
+<div class="row"><button id="mv">Move to B</button><span id="msg"></span></div>
+<div class="nums">
+  <div class="num"><span>writes sent</span><b id="sent">0</b></div>
+  <div class="num"><span>acknowledged</span><b id="acked">0</b></div>
+  <div class="num"><span>present in the store</span><b id="present">0</b></div>
+</div>
+<p class="sub" id="live"></p>
+<div class="wrap"><table>
+<thead><tr><th>#</th><th>move</th><th>epoch</th><th>frozen</th><th>tail</th><th>sent / acked / present</th><th>old holder says</th><th></th></tr></thead>
+<tbody id="moves"></tbody>
+</table></div>
+</main>
+<script>
+let holder = "a", busy = false;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function tick() {
+  try {
+    const s = await (await fetch("/stats")).json();
+    if (s.starting) return;
+    holder = s.holder;
+    $("procs").innerHTML = s.cells.map(c => `<div class="proc ${c.label === s.holder ? "on" : ""}">
+      <b>Process ${c.label.toUpperCase()}</b> ${c.label === s.holder ? `<span class="tag">holds notes, epoch ${s.epoch}</span>` : ""}
+      <small>pid ${c.pid} &middot; ${esc(c.addr)}</small></div>`).join("");
+    const last = s.moves[s.moves.length - 1];
+    $("sent").textContent = last ? last.sent : s.sent;
+    $("acked").textContent = last ? last.acked : s.acked;
+    $("present").textContent = last ? last.present : s.present;
+    $("live").textContent = `Counts as of the last move's audit. Live: ${s.sent} sent, ${s.acked} acknowledged at ${s.rate} writes/s; ${s.moved_replies} "moved" answers, ${s.retries} resends.`;
+    if (!busy) $("mv").textContent = `Move to ${holder === "a" ? "B" : "A"}`;
+    $("moves").innerHTML = s.moves.slice().reverse().map(m => `<tr><td>${m.n}</td><td>${m.from.toUpperCase()} &rarr; ${m.to.toUpperCase()}</td>
+      <td>${m.epoch}</td><td>${m.pause_ms.toFixed(2)} ms</td><td>${m.tail_len}</td>
+      <td>${m.sent} / ${m.acked} / ${m.present}</td><td>${esc(m.stale_reply)}</td>
+      <td class="${m.ok ? "ok" : "bad"}">${m.ok ? "match" : "mismatch"}</td></tr>`).join("");
+  } catch (e) { $("live").textContent = "not reachable: is `cargo run -- up` running?"; }
+}
+$("mv").onclick = async () => {
+  busy = true; $("mv").disabled = true; $("msg").textContent = "moving, then auditing...";
+  const to = holder === "a" ? "b" : "a";
+  const r = await (await fetch(`/move?to=${to}`, {method: "POST"})).json();
+  $("msg").textContent = r.error ? r.error : `frozen ${r.pause_ms.toFixed(2)} ms; ${r.sent} sent, ${r.acked} acknowledged, ${r.present} present`;
+  busy = false; $("mv").disabled = false; tick();
+};
+tick(); setInterval(tick, 500);
+</script>
+</body>
+</html>

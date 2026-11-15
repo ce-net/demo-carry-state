@@ -1,0 +1,45 @@
+10 moves, 1 clients at 20 writes/s each, name service found: direct
+move 1: a -> b under epoch 2: writes frozen 13.68 ms (snapshot at #22, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before 748bb0e2d708 #22  after 748bb0e2d708 #22
+  old holder now answers: "moved, epoch 2"
+  writes sent 43  acknowledged 43  present 43  (lost 0, duplicated 0)  longest client wait 3.6 ms  OK
+move 2: b -> a under epoch 3: writes frozen 25.81 ms (snapshot at #44, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before 3d07667ceaba #44  after 3d07667ceaba #44
+  old holder now answers: "moved, epoch 3"
+  writes sent 65  acknowledged 65  present 65  (lost 0, duplicated 0)  longest client wait 11.9 ms  OK
+move 3: a -> b under epoch 4: writes frozen 12.94 ms (snapshot at #66, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before e4019e1cd0d2 #66  after e4019e1cd0d2 #66
+  old holder now answers: "moved, epoch 4"
+  writes sent 87  acknowledged 87  present 87  (lost 0, duplicated 0)  longest client wait 1.2 ms  OK
+move 4: b -> a under epoch 5: writes frozen 9.36 ms (snapshot at #88, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before 63ef787a2ade #88  after 63ef787a2ade #88
+  old holder now answers: "moved, epoch 5"
+  writes sent 110  acknowledged 110  present 110  (lost 0, duplicated 0)  longest client wait 5.5 ms  OK
+move 5: a -> b under epoch 6: writes frozen 55.92 ms (snapshot at #111, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before e287e91ba197 #111  after e287e91ba197 #111
+  old holder now answers: "moved, epoch 6"
+  writes sent 133  acknowledged 133  present 133  (lost 0, duplicated 0)  longest client wait 48.9 ms  OK
+move 6: b -> a under epoch 7: writes frozen 35.78 ms (snapshot at #134, pre-copied 0 ops, frozen tail 1 ops)
+  hash chain before d4e6b175a1f0 #135  after d4e6b175a1f0 #135
+  old holder now answers: "moved, epoch 7"
+  writes sent 156  acknowledged 156  present 156  (lost 0, duplicated 0)  longest client wait 1.1 ms  OK
+move 7: a -> b under epoch 8: writes frozen 11.36 ms (snapshot at #157, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before cfa92a1c054c #157  after cfa92a1c054c #157
+  old holder now answers: "moved, epoch 8"
+  writes sent 179  acknowledged 179  present 179  (lost 0, duplicated 0)  longest client wait 26.7 ms  OK
+move 8: b -> a under epoch 9: writes frozen 37.86 ms (snapshot at #180, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before b1dc7a872288 #180  after b1dc7a872288 #180
+  old holder now answers: "moved, epoch 9"
+  writes sent 201  acknowledged 201  present 201  (lost 0, duplicated 0)  longest client wait 1.1 ms  OK
+move 9: a -> b under epoch 10: writes frozen 5.16 ms (snapshot at #202, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before f8a573f0630b #202  after f8a573f0630b #202
+  old holder now answers: "moved, epoch 10"
+  writes sent 223  acknowledged 223  present 223  (lost 0, duplicated 0)  longest client wait 21.2 ms  OK
+move 10: b -> a under epoch 11: writes frozen 2.24 ms (snapshot at #224, pre-copied 0 ops, frozen tail 0 ops)
+  hash chain before 4e2e72b5a31a #224  after 4e2e72b5a31a #224
+  old holder now answers: "moved, epoch 11"
+  writes sent 245  acknowledged 245  present 245  (lost 0, duplicated 0)  longest client wait 24.5 ms  OK
+pause ms: min 2.24  median 13.68  p95 55.92  max 55.92
+final: sent 245  acknowledged 245  present 245  lost 0  duplicated 0
+wrote proof/moves-10.json
+all 10 moves: no write lost, none duplicated

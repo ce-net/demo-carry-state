@@ -1,0 +1,15 @@
+[package]
+name = "cell-migrate"
+description = "Move a stateful cell between processes: snapshot, op tail, hash chain and an epoch-fenced handoff signed with ce-net-proto keys."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+ce-net-proto.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+hex.workspace = true
