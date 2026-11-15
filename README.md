@@ -21,8 +21,8 @@ You need Rust 1.88 or newer. Every dependency is public. The open capability tok
 comes from crates.io.
 
 ```sh
-git clone https://github.com/ce-net/demo-demo-carry-state
-cd demo-demo-carry-state
+git clone https://github.com/ce-net/demo-carry-state
+cd demo-carry-state
 cargo run -- up            # processes A and B, the name service, a client at 20 writes/s, the page
 # open http://127.0.0.1:7400/ and press "Move to B", or in a second terminal:
 cargo run -- move --to b
@@ -94,7 +94,7 @@ every run, idle or loaded, ended with the three counts equal.
 
 CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the tests and then the 100-move run against a
 fresh local dev sim on every push. It fails on any lost or duplicated write. On a quiet GitHub runner
-([run 43746424912](https://github.com/ce-net/demo-demo-carry-state/actions/runs/43746424912)) the same 100 moves
+([run 43746424912](https://github.com/ce-net/demo-carry-state/actions/runs/43746424912)) the same 100 moves
 froze writes for a median of 0.65 ms and at most 0.89 ms. That run ended with 19121 writes sent, 19121
 acknowledged and 19121 present.
 
